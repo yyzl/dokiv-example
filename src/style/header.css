@@ -1,0 +1,79 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #e7e7e7;
+  min-height: 50px;
+  margin-bottom: 5px;
+}
+
+.navbar-brand,
+.navbar-brand:hover {
+  flex: auto;
+  font-size: 18px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 15px;
+  color: #777;
+  text-decoration: none;
+}
+
+.navbar-nav {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+}
+.navbar-nav a {
+  padding: 15px;
+  line-height: 20px;
+  color: #777;
+  text-decoration: none;
+}
+.navbar-nav a:hover {
+  color: #108ee9;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav {
+    display: none;
+  }
+}
+
+.toggle-btn:hover,
+.toggle-btn {
+  width: 17px;
+  height: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.toggle-btn > div {
+  position: relative;
+  width: 17px;
+  height: 1px;
+  color: #777;
+  background-color: currentColor;
+}
+.toggle-btn > div::after,
+.toggle-btn > div::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 17px;
+  height: 1px;
+  background-color: currentColor;
+}
+.toggle-btn > div:before {
+  top: 5px;
+}
+.toggle-btn > div:after {
+  top: 10px;
+}
+
+@media (min-width: 768px) {
+  .toggle-btn {
+    display: none;
+  }
+}

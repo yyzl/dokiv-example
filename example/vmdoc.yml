@@ -1,0 +1,29 @@
+output: ./static
+
+# TODO
+extra:
+  - https://unpkg.com/element-ui/lib/theme-chalk/index.css
+  - type: js
+    src: https://unpkg.com/element-ui/lib/index.js
+
+locales:
+  - name: zh
+    text: 中文
+    title: Dawn
+
+    links:
+      - text: 首页
+        url: /
+      - text: GitHub
+        url: //github.com/AngusFu/vmdoc
+      - text: 问题反馈
+        url: //github.com/AngusFu/vmdoc/issues
+
+    groups:
+      - name: guide
+        text: 使用指南
+
+    docs:
+      - ./**/*.md
+      - '!./node_modules/**/*.md'
+      - '!./packages/**/node_modules/**/*.md'
