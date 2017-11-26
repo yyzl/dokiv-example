@@ -4,6 +4,7 @@ Inspired by [doczilla](https://unpkg.com/doczilla@1.0.6/) and [website of dawn](
 
 ## TODO
 
+- allow external libs or extra libs
 - watch mode
 - SSR for static site genreration
 - performance enhancement, like using cache, workes, etc.
