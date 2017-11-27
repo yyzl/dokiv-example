@@ -11,3 +11,9 @@ Inspired by [doczilla](https://unpkg.com/doczilla@1.0.6/) and [website of dawn](
 - support [API Blueprint](https://apiblueprint.org)
 - upgrade UI
 - more on the road...
+
+## Benifitial Resources
+
+- [node-webworker-threads](https://github.com/audreyt/node-webworker-threads)
+- [napajs](https://github.com/Microsoft/napajs)
+- [Napa.js 简介](https://zhuanlan.zhihu.com/p/30305523)
