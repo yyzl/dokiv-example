@@ -1,4 +1,9 @@
+# dest directory
 output: ./static
+
+# router mode
+# `hash` or `history`
+mode: 'hash'
 
 # TODO
 extra:

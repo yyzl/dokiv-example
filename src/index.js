@@ -1,9 +1,17 @@
+import objectAssign from 'object-assign'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueMeta from 'vue-meta'
+
 import featherIcons from 'feather-icons/dist/icons.json'
 import './style/index.css'
 
 Vue.use(VueRouter)
+Vue.use(VueMeta)
+
+Object.assign = objectAssign
+window.Vue = Vue
+
 Vue.component('icon', {
   name: 'icon',
   props: {
@@ -20,15 +28,15 @@ Vue.component('icon', {
   }
 })
 
-window.Vue = Vue
-
 export default function createApp ({
   routes,
   mode = 'hash',
+  linkActiveClass = 'active',
   el,
   template,
   data,
-  linkActiveClass = 'active'
+  render,
+  staticRenderFns
 }) {
   const routerConfig = {
     mode,
@@ -42,7 +50,9 @@ export default function createApp ({
     router: new VueRouter(routerConfig),
     data () {
       return data || {}
-    }
+    },
+    render,
+    staticRenderFns
   })
 
   return el ? app.$mount(el) : app
