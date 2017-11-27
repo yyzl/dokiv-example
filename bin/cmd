@@ -1,4 +1,6 @@
+#!/usr/bin/env node
 const path = require('path')
+const http = require('http')
 const fs = require('fs-extra')
 const globby = require('globby')
 const yaml = require('js-yaml')
@@ -6,6 +8,7 @@ const yaml = require('js-yaml')
 const bundle = require('../lib/bundle')
 const compileVue = require('../lib/md2vue')
 const getMetadata = require('../lib/metadata')
+const createSsrServer = require('../lib/server')
 
 const cwd = process.cwd()
 const spinner = require('ora')('Loading unicorns')
@@ -22,7 +25,12 @@ const outputDirectory = path.resolve(cwd, output)
 
 // TODO
 buildFromLocale(locales[0])
-  .catch(e => console.log(e))
+  .catch(e => {
+    console.log(e)
+  })
+  .then(() => {
+    process.exit()  
+  })
 
 async function buildFromLocale ({
   name = 'zh-CN',
@@ -33,7 +41,9 @@ async function buildFromLocale ({
   docs = []
 }) {
   // const language = name
-  spinner.start('Task starts...')
+  spinner.start('Building task starts...')
+
+  const categories = groups.map(group => group.name)
 
   // name -> text(title)
   const cateMap = groups.reduce((acc, { text, name }) => {
@@ -44,13 +54,14 @@ async function buildFromLocale ({
   // group -> page[]
   const pageMap = await traversFiles({
     glob: docs,
-    categories: Object.keys(cateMap)
+    categories
   })
 
   const routers = []
   const sideNavs = []
+  const urls = []
 
-  for (let cateName of Object.keys(pageMap)) {
+  for (let cateName of categories) {
     const cateList = []
 
     for (let page of pageMap[cateName]) {
@@ -58,9 +69,11 @@ async function buildFromLocale ({
         const { component, path, title } = page
 
         if (routers.length === 0) {
+          urls.push('/')
           routers.push(`{ path: "/", redirect: "${path}" }`)
         }
 
+        urls.push(path)
         cateList.push({ title, path })
         routers.push(`{ path: "${path}", component: (${component}) }`)
       }
@@ -86,19 +99,50 @@ async function buildFromLocale ({
     'utf-8'
   )
 
-  const code = bundle({
+  const {
+    clientSource,
+    serverSource
+  } = bundle({
     template,
     routers,
     routerMode,
     initialState
   })
 
+  await fs.remove(outputDirectory)
   await fs.ensureDir(outputDirectory)
-  await fs.writeFile(`${outputDirectory}/pageInfo.js`, code)
-  await fs.copy(abs('../dist/'), outputDirectory)
+  await fs.copy(abs('../dist/'), path.join(outputDirectory, 'assets'))
+  await fs.writeFile(`${outputDirectory}/assets/pageInfo.js`, clientSource)
   await fs.copy(abs('../template/index.html'), `${outputDirectory}/index.html`)
 
-  spinner.succeed('Task completed!')
+  spinner.succeed('Building task completed!')
+
+  if (routerMode === 'history') {
+    await fs.writeFile(`${outputDirectory}/ssr.js`, serverSource)
+
+    spinner.start('Bootsrap ssr server...')
+
+    createSsrServer({
+      ssrConfig: require(path.join(outputDirectory, 'ssr.js')),
+      staticDirectory: outputDirectory
+    })
+
+    for (let url of urls) {
+      spinner.info(`Start server-rendering ${url}`)
+      await request(`http://127.0.0.1:1126${url}`)
+    }
+
+    await fs.remove(`${outputDirectory}/ssr.js`)
+    spinner.succeed('SSR rendering completed!')
+  }
+}
+
+function request (url) {
+  return new Promise(resolve => {
+    http.get(url, () => {
+      resolve()
+    })
+  })
 }
 
 async function traversFiles ({

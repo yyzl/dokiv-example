@@ -61,10 +61,7 @@ import cssImport from 'postcss-import'
  */
 import postCSS from 'rollup-plugin-postcss'
 
-/**
- * Rollup: https://rollupjs.org/
- */
-export default {
+const bundle = {
   input: './src/index.js',
   output: {
     name: 'createApp',
@@ -100,3 +97,41 @@ export default {
     uglify()
   ]
 }
+
+const ssr = {
+  input: './src/index.js',
+  output: {
+    name: 'createApp',
+    file: 'dist/ssr.js',
+    format: 'cjs',
+    sourcemap: false,
+    strict: true
+  },
+  external: Object.keys(require('./package.json').dependencies),
+  plugins: [
+    {
+      load (id) {
+        if (/\.css/.test(id)) {
+          return ''
+        }
+      }
+    },
+    alias({
+      'vue': resolve('./node_modules/vue/dist/vue.esm.js')
+    }),
+    nodeResolve({
+      jsnext: true,
+      main: true,
+      browser: true,
+      extensions: ['.js', '.json']
+    }),
+    commonjs(),
+    json(),
+    buble()
+  ]
+}
+
+/**
+ * Rollup: https://rollupjs.org/
+ */
+export default [bundle, ssr]

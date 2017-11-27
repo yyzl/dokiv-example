@@ -1,9 +1,9 @@
 # dest directory
-output: ./static
+output: ./site
 
 # router mode
 # `hash` or `history`
-mode: 'hash'
+mode: 'history'
 
 # TODO
 extra:
@@ -17,16 +17,18 @@ locales:
     title: Dawn
 
     links:
-      - text: 首页
+      - text: Home
         url: /
       - text: GitHub
-        url: //github.com/AngusFu/vmdoc
-      - text: 问题反馈
-        url: //github.com/AngusFu/vmdoc/issues
+        url: //github.com/AngusFu/md2vu
+      - text: Issue
+        url: //github.com/AngusFu/md2vu/issues
 
     groups:
-      - name: guide
-        text: 使用指南
+      - name: intro
+        text: 简介
+      - name: usage
+        text: 使用方法
 
     docs:
       - ./**/*.md

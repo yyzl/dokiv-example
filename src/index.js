@@ -10,7 +10,10 @@ Vue.use(VueRouter)
 Vue.use(VueMeta)
 
 Object.assign = objectAssign
-window.Vue = Vue
+
+if (typeof window !== 'undefined' && window.window === window) {
+  window.Vue = Vue  
+}
 
 Vue.component('icon', {
   name: 'icon',
@@ -29,6 +32,7 @@ Vue.component('icon', {
 })
 
 export default function createApp ({
+  url, // ssr
   routes,
   mode = 'hash',
   linkActiveClass = 'active',
@@ -45,16 +49,29 @@ export default function createApp ({
     scrollBehavior: () => ({ x: 0, y: 0 })
   }
 
+  data = data || {}
+  
+  if (url) {
+    data.url = url
+  }
+
+  const router = new VueRouter(routerConfig)
+
   const app = new Vue({
     template,
-    router: new VueRouter(routerConfig),
-    data () {
-      return data || {}
-    },
+    router,
+    data: data,
     render,
     staticRenderFns
   })
 
-  return el ? app.$mount(el) : app
+  router.onReady(() => {
+    app.$mount('#app')
+  })
+  
+  return {
+    app,
+    router
+  }
 }
 
