@@ -109,11 +109,12 @@ async function buildFromLocale ({
     initialState
   })
 
-  await fs.remove(outputDirectory)
-  await fs.ensureDir(outputDirectory)
-  await fs.copy(abs('../dist/'), path.join(outputDirectory, 'assets'))
+  await fs.emptyDir(outputDirectory)
+  await fs.ensureDir(path.join(outputDirectory, 'assets'))
   await fs.writeFile(`${outputDirectory}/assets/pageInfo.js`, clientSource)
   await fs.copy(abs('../template/index.html'), `${outputDirectory}/index.html`)
+  await fs.copy(abs('../dist/bundle.js'), path.join(outputDirectory, 'assets/bundle.js'))
+  await fs.copy(abs('../dist/bundle.css'), path.join(outputDirectory, 'assets/bundle.css'))
 
   spinner.succeed('Building task completed!')
 
