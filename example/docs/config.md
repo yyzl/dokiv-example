@@ -1,5 +1,5 @@
 ---
-group: service
+group: guide
 name: client
 title: 用户配置
 index: 2

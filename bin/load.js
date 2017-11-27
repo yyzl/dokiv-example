@@ -6,6 +6,8 @@ const { loadFront } = require('yaml-front-matter')
 const md2vue = require('md2vue')
 const UglifyJS = require('uglify-js')
 const Prepack = require("prepack")
+const ora = require('ora')
+const spinner = ora('Loading unicorns')
 
 const cwd = process.cwd()
 const configFile = path.resolve(cwd, './vmdoc.yml')
@@ -25,6 +27,8 @@ async function parseLocaleConfig ({
   groups = [],
   docs = []
 }) {
+  spinner.start('Task starts...')
+
   const language = name
 
   const categories = groups.reduce((acc, { text, name }) => {
@@ -51,7 +55,7 @@ async function parseLocaleConfig ({
     // category not listed in config file
     if (category in categories === false) {
       console.log(
-        `Skip ${file}: group \`${group}\` is included ` +
+        `Skip ${file}: group \`${category}\` is not included ` +
         `in configuration!`
       )
       continue
@@ -113,6 +117,8 @@ myapp = createApp({
   await fs.writeFile(`${outputDirectory}/pageInfo.js`, code)
   await fs.copy(abs('../dist/'), outputDirectory)
   await fs.copy(abs('../template/index.html'), `${outputDirectory}/index.html`)
+
+  spinner.succeed('Task completed!')
 }
 
 /**
