@@ -11,22 +11,20 @@ extra:
   - type: js
     src: https://unpkg.com/element-ui/lib/index.js
 
-title: md2vue
+title: vmdoc
 links:
   - text: Home
     url: /
   - text: GitHub
-    url: //github.com/AngusFu/md2vu
+    url: //github.com/AngusFu/vmdoc
   - text: Issue
-    url: //github.com/AngusFu/md2vu/issues
+    url: //github.com/AngusFu/vmdoc/issues
 
 groups:
   - name: intro
     text: 简介
-  - name: usage
-    text: 使用方法
+  - name: use
+    text: 使用
 
 docs:
-  - ./**/*.md
-  - '!./node_modules/**/*.md'
-  - '!./packages/**/node_modules/**/*.md'
+  - ./docs/*.md

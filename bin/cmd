@@ -4,6 +4,7 @@ const http = require('http')
 const fs = require('fs-extra')
 const globby = require('globby')
 const yaml = require('js-yaml')
+const request = require('request-promise')
 
 const bundle = require('../lib/bundle')
 const compileVue = require('../lib/md2vue')
@@ -14,17 +15,16 @@ const cwd = process.cwd()
 const spinner = require('ora')('Loading unicorns')
 const configFile = path.resolve(cwd, './vmdoc.yml')
 
-const {
-  mode,
-  output,
-  locales
-} = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'))
+if (fs.existsSync(configFile) === false) {
+  spinner.warn('vmdoc.yml not found under current working directory!')
+  return
+}
 
-const routerMode = mode
-const outputDirectory = path.resolve(cwd, output)
+const config = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'))
+const outputDirectory = path.resolve(cwd, config.output)
+const routerMode = config.mode
 
-// TODO
-buildFromLocale(locales[0])
+buildFromLocale(config)
   .catch(e => {
     console.log(e)
   })
@@ -33,14 +33,11 @@ buildFromLocale(locales[0])
   })
 
 async function buildFromLocale ({
-  name = 'zh-CN',
-  text = '中文',
   title = 'vmDoc', 
   links = [],
   groups = [],
   docs = []
 }) {
-  // const language = name
   spinner.start('Building task starts...')
 
   const categories = groups.map(group => group.name)
@@ -130,20 +127,17 @@ async function buildFromLocale ({
 
     for (let url of urls) {
       spinner.info(`Start server-rendering ${url}`)
-      await request(`http://127.0.0.1:1126${url}`)
+      const resp = await request(`http://127.0.0.1:1126${url}`)
+      const dest = path.join(outputDirectory, `${url}/index.html`)
+      await fs.createFile(dest)
+      await fs.writeFile(dest, resp)
+      spinner.succeed(`Done server-rendering ${url}`)
     }
 
     await fs.remove(`${outputDirectory}/ssr.js`)
     spinner.succeed('SSR rendering completed!')
+    spinner.succeed(`Documents can be found here: ${outputDirectory}`)
   }
-}
-
-function request (url) {
-  return new Promise(resolve => {
-    http.get(url, () => {
-      resolve()
-    })
-  })
 }
 
 async function traversFiles ({
