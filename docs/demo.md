@@ -1,8 +1,6 @@
 ---
-group: usage
-name: demo
 title: Demo
-index: 2
+route: /usage/demo
 ---
 
 # Demo

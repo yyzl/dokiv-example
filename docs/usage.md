@@ -1,13 +1,11 @@
 ---
-group: usage
-name: api
 title: How to use
-index: 1
+route: /usage/api
 ---
 
 # How to use
 
-API is simple, so just see the code below: 
+API is simple, so just see the code below:
 
 ```js
 import md2vue from 'md2vue'

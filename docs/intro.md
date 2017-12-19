@@ -1,8 +1,6 @@
 ---
-group: intro
-name: index
 title: Introduction
-index: 1
+route: /index
 ---
 
 # Introduction to md2vue

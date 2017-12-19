@@ -1,0 +1,20 @@
+# router mode: `hash` or `history`
+routerMode: 'history'
+# root
+rootDir: './'
+# dest directory
+output: ./.site/
+# markdown files
+documents: 
+  - ./docs/**/*.md
+
+# styles
+postcss:
+  entry: ./style/index.css
+  minify: true
+  sourcemap: true
+  plugins:
+    - postcss-import
+    - postcss-cssnext
+
+externals:
